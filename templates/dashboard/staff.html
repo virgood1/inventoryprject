@@ -1,0 +1,37 @@
+{% extends 'partials/base.html' %}
+{% block title %}Staff page{% endblock %} 
+{% block content %}
+
+{% include 'partials/topnav.html' %}
+  <!--Table-->
+  <div class="container">
+    <div class="row my-4">
+        <div class="col-md-4"></div>
+        <div class="col-md-8">
+            <table class="table bg-white">
+                <thead class="bg-info">
+                    <tr class="text-white">
+                        <th scope="col">Num Immatriculation</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prenom</th>
+                        <th scope="col">Agence</th>
+                        <th scope="col">Service</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for worker in workers %}
+                    <tr>
+                        <td>{{worker.profile.NumImmatriculatione}}</td>
+                        <td>{{worker.profile.Nom}}</td>
+                        <td>{{worker.profile.Prenom}}</td>
+                        <td>{{worker.profile.Agence}}</td>
+                        <td>{{worker.profile.Service}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--End Table--> 
+{% endblock %}

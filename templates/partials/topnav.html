@@ -1,0 +1,86 @@
+<!--Topside-->
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    Information
+                </div>
+                <div class="card-body">
+                    <marquee behavior="" direction="">
+                        <h3 class="my-4" id="timeDisplay"></h3>
+                        <h4 class="my-4" id="casablancaWeather"></h4>
+                        <h4 class="my-4" id="tangierWeather"></h4>
+                    </marquee>
+                </div>
+            </div>
+        </div>
+        <script>
+            function updateTime() {
+                var now = new Date();
+                var timeString = now.toLocaleTimeString();  // Get the current time as a string
+                document.getElementById("timeDisplay").textContent = "Current Time: " + timeString;
+            }
+        
+            function fetchWeather(city, elementId) {
+                var url = `https://wttr.in/${city}?format=%C+%t`;
+        
+                fetch(url)
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById(elementId).textContent = `${city}: ${data}`;
+                    })
+                    .catch(error => {
+                        document.getElementById(elementId).textContent = `Weather data not available for ${city}`;
+                    });
+            }
+        
+            // Update the time every second
+            setInterval(updateTime, 1000);
+        
+            // Display the time immediately on page load
+            updateTime();
+        
+            // Fetch and display weather for Casablanca and Tangier
+            fetchWeather('Casablanca', 'casablancaWeather');
+            fetchWeather('Tanger', 'tangierWeather');
+        </script>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    Statistics
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a class="text-decoration-none text-dark" href="{% url 'dashboard-staff'%}">
+                                <div class="card my-card shadow text-center p-3">
+                                    <h4>Staff<i class="fas fa-users"></i></h4>
+                                    <h3>4</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a class="text-decoration-none text-dark" href="{% url 'dashboard-materiel'%}">
+                                <div class="card my-card shadow text-center p-3">
+                                    <h4>Materiel<i class="fas fa-box"></i></h4>
+                                    <h3>4</h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a class="text-decoration-none text-dark" href="{% url 'dashboard-affectation'%}">
+                                <div class="card my-card shadow text-center p-3">
+                                    <h4>Affectation<i class="fas fa-box"></i></h4>
+                                    <h3>4</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Topside-->

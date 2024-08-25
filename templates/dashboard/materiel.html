@@ -1,0 +1,112 @@
+{% extends 'partials/base.html' %}
+{% block title %}Materiel Page{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+{% include 'partials/topnav.html' %}
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-4">
+            <div class="border bg-white p-3">
+                <h4>Add Materiel</h4>
+                <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input class="btn btn-success btn-block" type="submit" value="Add Materiel">
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <!-- Formulaire de filtre -->
+            <form method="GET" class="mb-3">
+                <label for="typeFilter">Filtrer par type :</label>
+                <select name="type" id="typeFilter" class="form-select" onchange="this.form.submit()">
+                    <option value="">Tous les types</option>
+                    {% for type in types_disponibles %}
+                        <option value="{{ type }}" {% if request.GET.type == type %}selected{% endif %}>{{ type }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            <table class="table bg-white">
+                <thead class="bg-info">
+                    <tr class="text-white">
+                        <th scope="col">NumInventaire</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">NumSerie</th>
+                        <th scope="col">Hostname</th>
+                        <th scope="col">Marque</th>
+                        <th scope="col">Modele</th>
+                        <th scope="col">DateAchat</th>
+                        <th scope="col">État</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.NumInventaire }}</td>
+                        <td>{{ item.Type }}</td>
+                        <td>{{ item.NumSerie }}</td>
+                        <td>{{ item.Hostname }}</td>
+                        <td>{{ item.Marque }}</td>
+                        <td>{{ item.Modele }}</td>
+                        <td>{{ item.DateAchat }}</td>
+                        <td>
+                            {% if item.Etat %}
+                                <!-- Matériel déjà affecté -->
+                                <span class="badge bg-danger">Affecté</span>
+                                <span class="material-icon animate-blink">🔒</span>
+                            {% else %}
+                                <!-- Matériel non affecté -->
+                                <span class="badge bg-success">Disponible</span>
+                                <span class="material-icon animate-pulse">✅</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn btn-info btn-sm" href="{% url 'dashboard-materiel-update' item.id %}">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="{% url 'dashboard-materiel-delete' item.id %}">Delete</a>
+                        </td>
+                    </tr>  
+                    {% endfor %}  
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-blink {
+        animation: blink 1s infinite;
+    }
+
+    .animate-pulse {
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes blink {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+{% endblock %}

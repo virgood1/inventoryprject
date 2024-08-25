@@ -1,0 +1,62 @@
+{% extends 'partials/base.html' %}
+{% block title %}Staff page{% endblock %} 
+{% block content %}
+
+{% include 'partials/topnav.html' %}
+<!--Table-->
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-4">
+            <!-- Formulaire de recherche -->
+            <form method="GET" class="mb-3">
+                <label for="usernameSearch">Rechercher par nom d'utilisateur :</label>
+                <input type="text" name="username" id="usernameSearch" class="form-control" placeholder="Entrez le nom d'utilisateur" value="{{ request.GET.username }}">
+                <button type="submit" class="btn btn-primary mt-2">Rechercher</button>
+            </form>
+
+            <!-- Formulaire d'affectation -->
+            <form method="POST" action="{% url 'affecter_materiel' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="materielSelect">Choisir le matériel à affecter :</label>
+                    <select name="materiel_id" id="materielSelect" class="form-control">
+                        {% for materiel in materiels_disponibles %}
+                            <option value="{{ materiel.id }}">{{ materiel.NumInventaire }} - {{ materiel.Type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="userSelect">Choisir l'utilisateur :</label>
+                    <select name="user_id" id="userSelect" class="form-control">
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Affecter</button>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <table class="table bg-white">
+                <thead class="bg-info">
+                    <tr class="text-white">
+                        <th scope="col">NumInventaire</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Affecté à</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for affectation in affectations %}
+                    <tr>
+                        <td>{{ affectation.Materiel.NumInventaire }}</td>
+                        <td>{{ affectation.Materiel.Type }}</td>
+                        <td>{{ affectation.staff.username }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!--End Table--> 
+{% endblock %}

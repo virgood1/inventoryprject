@@ -1,0 +1,32 @@
+{% load crispy_forms_tags %}
+<div class="container">
+<div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    Orders Records
+                </div>
+                <div class="card-body">
+                    <table class="table bg-white">
+                        <thead class="bg-info text-white">
+                            <tr>
+                                <th scope="col">Materiel</th>
+                                <th scope="col">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for affectations in affectations  %}
+                            {% if affectations.staff == user %}
+                            <tr>
+                                <td>{{affectations.Materiel.NumInventaire}}</td>
+                                <td>{{affectations.Materiel.Type}}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
