@@ -1,0 +1,95 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home page{% endblock %}
+
+{% block content %}
+
+{% if user.is_authenticated and user.is_staff and user.is_superuser %}
+{% include 'partials/topnav.html' %} 
+
+<!--Graphs-->
+<div class="container">
+    <div class="row my-5">
+        <div class="col-md-6">
+            <div class="bg-white">
+                <canvas id="myChart1" width="400" height="300"></canvas>
+                <script>
+                    var ctx = document.getElementById('myChart1').getContext('2d');
+
+                    // Calculate total number of materials
+                    var totalMaterials = {{ older_than_5_years.count }} + {{ less_than_5_years.count }};
+
+                    // Calculate percentages
+                    var olderThan5YearsPercentage = ({{ older_than_5_years.count }} / totalMaterials * 100).toFixed(2);
+                    var lessThan5YearsPercentage = ({{ less_than_5_years.count }} / totalMaterials * 100).toFixed(2);
+
+                    var myChart1 = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: [
+                                'More than 5 years', 
+                                'Less than 5 years'
+                            ],
+                            datasets: [{
+                                label: 'Materials',
+                                data: [
+                                    {{ older_than_5_years.count }},
+                                    {{ less_than_5_years.count }}
+                                ],
+                                backgroundColor: [
+                                    'rgba(255, 0, 0, 1)',  // Red for more than 5 years
+                                    'rgba(0, 0, 0, 1)'  // Black for less than 5 years
+                                ],
+                                borderColor: [
+                                    'rgba(255, 0, 0, 1)',  // Red for more than 5 years
+                                    'rgba(0, 0, 0, 1)'  // Black for less than 5 years
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            var label = context.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            label += context.raw;
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [{
+                            afterDatasetsDraw: function(chart) {
+                                var ctx = chart.ctx;
+                                chart.data.datasets.forEach(function(dataset, i) {
+                                    var meta = chart.getDatasetMeta(i);
+                                    meta.data.forEach(function(bar, index) {
+                                        var data = dataset.data[index];
+                                        var percentage = ((data / totalMaterials) * 100).toFixed(2) + '%';
+                                        ctx.fillStyle = '#fff';
+                                        ctx.font = 'bold 16px Arial';
+                                        var position = bar.tooltipPosition();
+                                        ctx.fillText(percentage, position.x, position.y - 10);
+                                    });
+                                });
+                            }
+                        }]
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+<!--End Graphs-->
+{% else %}
+{% include 'dashboard/staff_index.html' %}
+{% endif %}
+{% endblock %}
